@@ -9,10 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^1.9.5",
     "eslint": "8.39.0",
     "eslint-config-next": "13.3.1",
+    "js-cookie": "^3.0.5",
     "next": "13.3.1",
+    "next-redux-wrapper": "^8.1.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-paginate": "^8.2.0",
+    "react-redux": "^8.0.5",
+    "react-toastify": "^9.1.2"
+  },
+  "devDependencies": {
+    "@types/js-cookie": "^3.0.3",
+    "redux-logger": "^3.0.6",
+    "sass": "^1.62.1"
   }
 }

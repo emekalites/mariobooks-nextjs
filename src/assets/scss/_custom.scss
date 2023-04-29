@@ -1,0 +1,115 @@
+.mt-40 {
+	margin-top: 140px;
+}
+
+.pointer {
+	cursor: pointer;
+}
+
+.disabled {
+	pointer-events: none;
+}
+
+.shopping-cart-img,
+.table-content {
+	img {
+		width: 60px;
+		height: 60px;
+	}
+}
+
+.shopping-cart-title {
+	width: 145px;
+}
+
+.modal-backdrop {
+	display: none;
+}
+
+.modal-open {
+	.modal-backdrop {
+		display: block !important;
+		opacity: 0.5;
+	}
+}
+
+.product-details-content .product-details-price span.current-price {
+	color: #000;
+}
+
+.vl-shown {
+	overflow: hidden;
+}
+
+.vl-overlay {
+	bottom: 0;
+	left: 0;
+	position: absolute;
+	right: 0;
+	top: 0;
+	align-items: center;
+	display: none;
+	justify-content: center;
+	overflow: hidden;
+	z-index: 9999;
+}
+
+.vl-overlay.vl-active {
+	display: flex;
+}
+
+.vl-overlay.vl-full-page {
+	z-index: 9999;
+	position: fixed;
+}
+
+.vl-overlay .vl-background {
+	bottom: 0;
+	left: 0;
+	position: absolute;
+	right: 0;
+	top: 0;
+	background: #fff;
+	opacity: 0.5;
+}
+
+.vl-overlay .vl-icon,
+.vl-parent {
+	position: relative;
+}
+
+.single-slider-bg-1 {
+	background-image: url(../img/slider/slider-11.jpg);
+}
+
+$theme-color: #00502b;
+
+@keyframes dual-ring {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.loader {
+	position: relative;
+
+	[data-loader='dual-ring'] {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 50px;
+		height: 50px;
+		margin-left: -25px;
+		margin-top: -25px;
+		display: inline-block;
+		content: ' ';
+		display: block;
+		border-radius: 50%;
+		border: 5px solid $theme-color;
+		border-color: $theme-color transparent $theme-color transparent;
+		animation: dual-ring 1s linear infinite;
+	}
+}
