@@ -10,17 +10,17 @@ import toast from '@/services/toast';
 const storage = new LocalStorage();
 
 const AuthProvider = ({ children }) => {
-	const user = useSelector((state) => state.user.profile);
+	const user = useSelector(state => state.user.profile);
 
 	const dispatch = useDispatch();
 
-	const setTokens = (data) => {
+	const setTokens = data => {
 		const user = data.user;
 		dispatch(loginUser(user));
 		storage.setItem(TOKEN_COOKIE, data.token);
 	};
 
-	const logout = (callback) => {
+	const logout = callback => {
 		dispatch(logoutUser());
 		storage.removeItem(TOKEN_COOKIE);
 		toast({ type: 'success', message: 'user logged out!' });
@@ -28,7 +28,7 @@ const AuthProvider = ({ children }) => {
 	};
 
 	return (
-		<AuthContext.Provider value={{ user, setAuthUser: setTokens, logout }}>
+		<AuthContext.Provider value={{ user, login: setTokens, logout }}>
 			{children}
 		</AuthContext.Provider>
 	);

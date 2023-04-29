@@ -7,45 +7,44 @@ import { useDispatch, useSelector } from 'react-redux';
 import Script from 'next/script';
 import { useAuth } from '@/hooks/auth';
 import { formatCurrency, reference, request } from '@/services/utilities';
-import { remove } from '@/redux/slices/cart';
+import { remove, clear } from '@/redux/slices/cart';
 import toast from '@/services/toast';
 import logo from '../assets/img/logo/logo.png';
+import { block } from '@/redux/slices/general';
 
 const AppHeader = () => {
-	const router = useRouter();
-
 	const { user, logout } = useAuth();
 
+	const router = useRouter();
 	const dispatch = useDispatch();
-	const cart = useSelector((state) => state.cart);
 
-	const removeFromCart = (item) => dispatch(remove(item));
+	const cart = useSelector(state => state.cart);
+
+	const removeFromCart = item => dispatch(remove(item));
 
 	const checkout = async () => {
 		try {
 			const body = {
-				items: cart.items.map((c) => ({ id: c.id })),
+				items: cart.items.map(c => ({ id: c.id })),
 				reference: reference(),
 				channel: 'bank-transfer',
 			};
 			const config = { method: 'POST', body };
 			dispatch(block(true));
-			await request(transactions, config);
+			await request('transactions', config);
 			dispatch(block(false));
 			dispatch(clear());
 			toast({
 				type: 'success',
 				message: 'Order Sent! Thanks for buying from us',
 			});
-			const el = document.getElementsByClassName('shopping-cart-content');
-			el.classList.remove('cart-visible');
 			router.push('/account/purchases');
 		} catch (e) {
 			console.log(e);
 			dispatch(block(false));
 			toast({
 				type: 'error',
-				message: e.response?._data?.message || 'error, failed!',
+				message: e.response?._data?.message || 'transaction failed!',
 			});
 		}
 	};
@@ -127,11 +126,11 @@ const AppHeader = () => {
 											</ul>
 										</div>
 									</div>
-									<div className="same-style header-wishlist">
+									{/* <div className="same-style header-wishlist">
 										<a>
 											<i className="pe-7s-like"></i>
 										</a>
-									</div>
+									</div> */}
 									<div className="same-style cart-wrap">
 										<button className="icon-cart">
 											<i className="pe-7s-shopbag"></i>

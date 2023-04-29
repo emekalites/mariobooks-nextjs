@@ -1,7 +1,8 @@
+import moment from 'moment';
 import { API_URI, TOKEN_COOKIE } from '@/services/constants';
 import LocalStorage from '@/services/storage';
 
-export const isUnset = (o) => typeof o === 'undefined' || o === null;
+export const isUnset = o => typeof o === 'undefined' || o === null;
 
 export function encodeValue(val) {
 	if (typeof val === 'string') {
@@ -21,7 +22,7 @@ export function decodeValue(val) {
 	return val;
 }
 
-const checkStatus = async (response) => {
+const checkStatus = async response => {
 	if (!response.ok) {
 		if (response.statusText === 'Unauthorized') {
 			// prettier-ignore
@@ -41,7 +42,7 @@ const checkStatus = async (response) => {
 	return response;
 };
 
-const parseJSON = (response) => response.json();
+const parseJSON = response => response.json();
 
 export async function request(uri, { body, ...customConfig } = {}) {
 	let headers = {
@@ -76,9 +77,9 @@ export async function request(uri, { body, ...customConfig } = {}) {
 }
 
 export function updateImmutable(list, payload) {
-	const data = list.find((d) => d.id === payload.id);
+	const data = list.find(d => d.id === payload.id);
 	if (data) {
-		const index = list.findIndex((d) => d.id === payload.id);
+		const index = list.findIndex(d => d.id === payload.id);
 
 		return [
 			...list.slice(0, index),
@@ -94,6 +95,10 @@ export function formatCurrency(amount, abs) {
 	return `₦${(abs ? Math.abs(amount || 0) : amount).toLocaleString()}`;
 }
 
+export function formatDate(date, format = 'YYYY-MM-DD') {
+	return date ? moment(date).format(format) : '--';
+}
+
 export function reference() {
 	let text = '';
 	const possible =
@@ -101,4 +106,16 @@ export function reference() {
 	for (let i = 0; i < 10; i++)
 		text += possible.charAt(Math.floor(Math.random() * possible.length));
 	return text;
+}
+
+export function parseToken(token) {
+	try {
+		if (token === '') {
+			return null;
+		}
+
+		return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+	} catch (e) {
+		return null;
+	}
 }

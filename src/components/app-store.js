@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
 import AppPagination from '@/components/app-pagination';
 import ViewBook from '@/components/view-book';
 import toast from '@/services/toast';
@@ -18,27 +19,34 @@ const AppStore = ({ categories, category }) => {
 	const [book, setBook] = useState(null);
 
 	const dispatch = useDispatch();
+	const router = useRouter();
 
-	const cart = useSelector((state) => state.cart);
+	const cart = useSelector(state => state.cart);
 
-	const fetchBooks = useCallback(async (category, page) => {
-		try {
-			setLoading(true);
-			const p = page || 1;
-			const rs = await request(
-				`books?page_size=${limit}&page=${p}&category=${category}`
-			);
-			const { list, ...meta } = rs.result;
-			setMeta(meta);
-			setBooks(list);
-			setCurrentCategory(category);
-			setLoading(false);
-		} catch (error) {
-			console.log(error);
-			setCurrentCategory(category);
-			setLoading(false);
-		}
-	}, []);
+	const fetchBooks = useCallback(
+		async (category, page) => {
+			try {
+				if (!categories.find(item => item.slug === category)) {
+					router.push('/404');
+				}
+				setLoading(true);
+				const p = page || 1;
+				const rs = await request(
+					`books?page_size=${limit}&page=${p}&category=${category}`
+				);
+				const { list, ...meta } = rs.result;
+				setMeta(meta);
+				setBooks(list);
+				setCurrentCategory(category);
+				setLoading(false);
+			} catch (error) {
+				console.log(error);
+				setCurrentCategory(category);
+				setLoading(false);
+			}
+		},
+		[categories, router]
+	);
 
 	useEffect(() => {
 		if (currentCategory !== category) {
@@ -46,12 +54,11 @@ const AppStore = ({ categories, category }) => {
 		}
 	}, [category, currentCategory, fetchBooks]);
 
-	const onNavigatePage = async (nextPage) => {
-		setWorking(true);
+	const onNavigatePage = async nextPage => {
 		await fetchBooks(category, nextPage);
 	};
 
-	const showBook = (item) => {
+	const showBook = item => {
 		document.body.classList.add('modal-open');
 		setBook(item);
 		setShowModal(true);
@@ -63,8 +70,8 @@ const AppStore = ({ categories, category }) => {
 		document.body.classList.remove('modal-open');
 	};
 
-	const addToCart = (item) => {
-		const _item = cart.items.find((c) => c.id === item.id);
+	const addToCart = item => {
+		const _item = cart.items.find(c => c.id === item.id);
 		if (!_item) {
 			dispatch(add(item));
 			toast({ type: 'success', message: 'item added to cart' });
@@ -83,8 +90,8 @@ const AppStore = ({ categories, category }) => {
 		}, 2000);
 	};
 
-	const removeFromCart = (item) => {
-		const _item = cart.items.find((c) => c.id === item.id);
+	const removeFromCart = item => {
+		const _item = cart.items.find(c => c.id === item.id);
 		if (_item) {
 			dispatch(remove(item));
 			toast({ type: 'success', message: 'item removed from cart' });

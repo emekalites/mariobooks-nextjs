@@ -1,12 +1,28 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { request } from '@/services/utilities';
+import { togglePreloading } from '@/redux/slices/general';
+
+export const fetchAuthUser = () => async dispatch => {
+	try {
+		const rs = await request('auth/user');
+		dispatch(loginUser(rs.result.user));
+		dispatch(togglePreloading(false));
+	} catch (e) {
+		dispatch(logoutUser());
+		dispatch(togglePreloading(false));
+	}
+};
+
+const initialState = { profile: null };
 
 export const userSlice = createSlice({
 	name: 'user',
-	initialState: {
-		profile: null,
-	},
+	initialState,
 	reducers: {
 		loginUser: (state, action) => {
+			state.profile = action.payload;
+		},
+		setUser: (state, action) => {
 			state.profile = action.payload;
 		},
 		logoutUser: () => {
@@ -15,6 +31,6 @@ export const userSlice = createSlice({
 	},
 });
 
-export const { loginUser, logoutUser } = userSlice.actions;
+export const { loginUser, setUser, logoutUser } = userSlice.actions;
 
 export default userSlice.reducer;
